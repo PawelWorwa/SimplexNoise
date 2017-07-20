@@ -18,32 +18,32 @@ For testing and visualisation purposes , [SFML](https://www.sfml-dev.org/) (Simp
 
 ## Function description
 To generate a noise, one of two functions are used: noise or octave. 
-```java
+```cpp
 float noise ( float xPos, float yPos );
 ```
 Function returns noise value from range -1 to 1;
-```java
+```cpp
 float octave( int octaves, float xPos, float yPos );
 ```
 Function returns cumulative noise value from range -1 to 1. Total number of noise functions that are added together are described by ‘Octaves’ parameter.
-```java
+```cpp
 float unsignedNoise ( float xPos, float yPos );
 ```
 Same as noise function with difference, that it returns value from 0 to 1.
-```java
+```cpp
 float unsignedOctave( int octaves, float xPos, float yPos );
 ```
 Same as octave function with difference, that it returns value from 0 to 1.
 
 ## Output
 How does it looks in practice?. It’s being well illustrated by picture below (yes… it’s this library output):
-![Octaves](/images/octaves.png)
+![Octaves](http://i.imgur.com/WyspYaV.png)
 
 To put it simply, the higher octaves (more noise functions added together) than more sophisticated output. 
 
 ## Usage
 Basic usage 
-```java
+```cpp
 /*
 SimplexNoise::Seed::ORIGINAL - use original Ken Perlin hash lookup table
 SimplexNoise::Seed::RANDOM   - generate random hash lookup table (create random seed for output)
