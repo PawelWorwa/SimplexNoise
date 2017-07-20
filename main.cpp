@@ -5,7 +5,6 @@
 
 #include <cstdlib>
 #include <ctime>
-#include <vector>
 
 #include "SimplexNoise.hpp"
 
@@ -16,7 +15,8 @@ std::vector<sf::VertexArray> noiseVisualisation;
 
 /* ***** Functions *****/
 void generateNoise( void ) {
-    SimplexNoise noiseGenerator( SimplexNoise::Seed::ORIGINAL );
+    SimplexNoise noiseGenerator;
+    noiseGenerator.randomizeSeed();
 
     for ( std::size_t x=0; x<width; ++x ) {
         for ( std::size_t y=0; y<height; ++y ) {

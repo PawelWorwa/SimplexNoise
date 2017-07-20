@@ -15,16 +15,12 @@
 
 class SimplexNoise {
     public:
-        enum Seed {
-            ORIGINAL,
-            RANDOM
-        }; /* for sake of one class purpose only */
-
-        explicit SimplexNoise( Seed seed );
+        SimplexNoise();
         virtual ~SimplexNoise();
 
         float noise ( float xPos, float yPos );
         float octave( int octaves, float xPos, float yPos );
+        void  randomizeSeed ( void );
         float unsignedNoise ( float xPos, float yPos );
         float unsignedOctave( int octaves, float xPos, float yPos );
 

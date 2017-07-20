@@ -1,18 +1,7 @@
 #include "SimplexNoise.hpp"
 
-SimplexNoise::SimplexNoise( Seed seed ) {
-    switch( seed ) {
-        case Seed::RANDOM :
-            for ( std::size_t index=0; index<=255; ++index ) {
-                permTab[index] = index;
-            }
-            std::random_shuffle( std::begin(permTab), std::end(permTab) );
-            break;
-
-        default :
-            std::copy( std::begin(originalPermTab), std::end(originalPermTab), std::begin(permTab) );
-            break;
-    }
+SimplexNoise::SimplexNoise() {
+    std::copy( std::begin(originalPermTab), std::end(originalPermTab), std::begin(permTab) );
 }
 
 SimplexNoise::~SimplexNoise() {
@@ -161,4 +150,8 @@ float SimplexNoise::unsignedNoise( float xPos, float yPos ) {
 
 float SimplexNoise::unsignedOctave( int octaves, float xPos, float yPos ) {
     return octave( octaves, xPos, yPos ) / 2 + 0.5f;
+}
+
+void SimplexNoise::randomizeSeed( void ) {
+    std::random_shuffle( std::begin(permTab), std::end(permTab) );
 }

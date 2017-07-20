@@ -34,6 +34,10 @@ Same as noise function with difference, that it returns value from 0 to 1.
 float unsignedOctave( int octaves, float xPos, float yPos );
 ```
 Same as octave function with difference, that it returns value from 0 to 1.
+```cpp
+void  randomizeSeed ( void );
+```
+Set random seed to prevent same result each time.
 
 ## Output
 How does it looks in practice?. It’s being well illustrated by picture below (yes… it’s this library output):
@@ -44,11 +48,7 @@ To put it simply, the higher octaves (more noise functions added together) than 
 ## Usage
 Basic usage 
 ```cpp
-/*
-SimplexNoise::Seed::ORIGINAL - use original Ken Perlin hash lookup table
-SimplexNoise::Seed::RANDOM   - generate random hash lookup table (create random seed for output)
-*/
-SimplexNoise noiseGenerator( SimplexNoise::Seed::ORIGINAL );
+SimplexNoise noiseGenerator;
 
 float xValue = 100.0f;
 float yValue = 100.0f;
