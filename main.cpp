@@ -9,40 +9,45 @@
 #include "SimplexNoise.hpp"
 
 /* ***** Variables *****/
-unsigned static int const width  = 400;
-unsigned static int const height = 400;
-std::vector<sf::VertexArray> noiseVisualisation;
+unsigned static int const WIDTH  = 400;
+unsigned static int const HEIGHT = 400;
+sf::Uint8 *pixels = new sf::Uint8[WIDTH * HEIGHT * 4]; //RGBA
 
 /* ***** Functions *****/
+void setPixel( unsigned int x, unsigned int y, float value ) {
+    pixels[4*(y * WIDTH + x)]     = value * 255;
+    pixels[4*(y * WIDTH + x) + 1] = value * 255;
+    pixels[4*(y * WIDTH + x) + 2] = value * 255;
+    pixels[4*(y * WIDTH + x) + 3] = value * 255;
+}
+
 void generateNoise( void ) {
     SimplexNoise noiseGenerator;
-    noiseGenerator.randomizeSeed();
+    for ( std::size_t y=0; y<HEIGHT; ++y ) {
+        for ( std::size_t x=0; x<WIDTH; ++x ) {
+            float xPos = float( x ) / float( WIDTH )  - 0.5f;
+            float yPos = float( y ) / float( HEIGHT ) - 0.5f;
+            float octaves = 5;
 
-    for ( std::size_t x=0; x<width; ++x ) {
-        for ( std::size_t y=0; y<height; ++y ) {
-            float xPos = float( x ) / float( width )  - 0.5f;
-            float yPos = float( y ) / float( height ) - 0.5f;
-
-            //float freq = 2.0f;
-            //float elevation = noiseGenerator.unsignedNoise( freq*xPos, freq*yPos );
-            int octaves     = 5;
-            float elevation = noiseGenerator.unsignedOctave( octaves, xPos, yPos );
-
-            sf::Color color = sf::Color( elevation*255, elevation*255, elevation*255 );
-            sf::VertexArray point( sf::Points, 1 );
-            point[0].position = sf::Vector2f( x, y );
-            point[0].color = color;
-
-            noiseVisualisation.push_back( point );
+            float value = noiseGenerator.unsignedOctave( octaves, xPos, yPos );
+            setPixel( x, y, value );
         }
     }
 }
+
 /* ***** Main *****/
 int main() {
     srand( time(0) );
-    sf::RenderWindow window( sf::VideoMode(width, height), "Simplex Noise 2D visualisation" );
+    sf::RenderWindow window( sf::VideoMode(WIDTH, HEIGHT), "Simplex Noise 2D visualisation" );
+
+    sf::Texture texture;
+    texture.create( WIDTH, HEIGHT );
+
+    sf::Sprite sprite;
+    sprite.setTexture( texture );
 
     generateNoise();
+    texture.update( pixels );
 
     while ( window.isOpen() ) {
         sf::Event event;
@@ -52,13 +57,11 @@ int main() {
             }
         }
 
-        for( std::size_t i=0; i<noiseVisualisation.size(); ++i ) {
-            sf::VertexArray point = noiseVisualisation.at( i );
-            window.draw( point );
-        }
-
+        window.draw( sprite );
         window.display();
     }
 
+    delete pixels;
+	
     return EXIT_SUCCESS;
 }
