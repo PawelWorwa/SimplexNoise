@@ -21,21 +21,23 @@ For testing and visualisation purposes , [SFML](https://www.sfml-dev.org/) (Simp
 void  randomizeSeed ( void );
 ```
 Generate random seed (by shuffling perutation table) to prevent same output each time.
-&nbsp;
+
 
 ```cpp
 void  setFrequency  ( float frequency ) { this->frequency = frequency; };
 ```
 Frequency determines "zoom" level for generated pattern. Best results are achieved, when parameter is within range **1.0f – 16.0f** If omitted, default value will be used (**1.0f**). Differences between various frequency values (1, 2 and 4) are presented below:
+
 ![Frequency](http://i.imgur.com/4PWOJUx.png)
-&nbsp;
+
 
 ```cpp
 void  setOctaves    ( int octaves ) { this->octaves = octaves; };
 ```
 Octaves are sum of noises generated on different frequencies. Best results are achieved, when parameter is within range **1 – 6**. If omitted, default value will be used (**1**). Differences between various octaves (1, 2 and 3) are presented below:
+
 ![Octaves](http://i.imgur.com/LVkToA0.png)
-&nbsp;
+
 
 ```cpp
 void  setPersistence( float persistence ) { this->persistence = persistence; };
@@ -45,14 +47,15 @@ I admit that it's ‘hard’ for me to explain in short word’s what exactly is
 A multiplier that determines how quickly the amplitudes diminish for each successive octave in a Perlin-noise function.“
 
 Best results are achieved, when parameter is within range **0.0f – 1.0f**. If omitted, default value will be used (**0.5f**).  Differences between various persistence values (0.4f, 0.5f and 0.6f) are presented below:
+
 ![Persistence](http://i.imgur.com/cS3XzoA.png)
-&nbsp;
+
 
 ```cpp
 float signedOctave  ( float xPos, float yPos );
 ```
 Function returns cumulative noise value from range -1 to 1. Total number of noise functions that are added together are described by ‘Octaves’ parameter.
-&nbsp;
+
 
 ```cpp
 float unsignedOctave( float xPos, float yPos );
