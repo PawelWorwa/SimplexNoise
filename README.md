@@ -17,33 +17,57 @@ For the sake of simplicity (personally, I like to include just one pair of heade
 For testing and visualisation purposes , [SFML](https://www.sfml-dev.org/) (Simple and Fast Multimedia Library) was used. 
 
 ## Function description
-To generate a noise, one of two functions are used: noise or octave. 
-```cpp
-float noise ( float xPos, float yPos );
-```
-Function returns noise value from range -1 to 1;
-```cpp
-float octave( int octaves, float xPos, float yPos );
-```
-Function returns cumulative noise value from range -1 to 1. Total number of noise functions that are added together are described by ‘Octaves’ parameter.
-```cpp
-float unsignedNoise ( float xPos, float yPos );
-```
-Same as noise function with difference, that it returns value from 0 to 1.
-```cpp
-float unsignedOctave( int octaves, float xPos, float yPos );
-```
-Same as octave function with difference, that it returns value from 0 to 1.
 ```cpp
 void  randomizeSeed ( void );
 ```
-Set random seed to prevent same result each time.
+Generate random seed (by shuffling perutation table) to prevent same output each time.
+&nbsp;
+
+```cpp
+void  setFrequency  ( float frequency ) { this->frequency = frequency; };
+```
+Frequency determines "zoom" level for generated pattern. Best results are achieved, when parameter is within range **1.0f – 16.0f** If omitted, default value will be used (**1.0f**). Differences between various frequency values (1, 2 and 4) are presented below:
+![Frequency](http://i.imgur.com/4PWOJUx.png)
+&nbsp;
+
+```cpp
+void  setOctaves    ( int octaves ) { this->octaves = octaves; };
+```
+Octaves are sum of noises generated on different frequencies. Best results are achieved, when parameter is within range **1 – 6**. If omitted, default value will be used (**1**). Differences between various octaves (1, 2 and 3) are presented below:
+![Octaves](http://i.imgur.com/LVkToA0.png)
+&nbsp;
+
+```cpp
+void  setPersistence( float persistence ) { this->persistence = persistence; };
+```
+I admit that it's ‘hard’ for me to explain in short word’s what exactly is persistence. Making use of explanation I’ve found [here](http://libnoise.sourceforge.net/glossary/#persistence).
+>“**Persistence**
+A multiplier that determines how quickly the amplitudes diminish for each successive octave in a Perlin-noise function.“
+
+Best results are achieved, when parameter is within range **0.0f – 1.0f**. If omitted, default value will be used (**0.5f**).  Differences between various persistence values (0.4f, 0.5f and 0.6f) are presented below:
+![Persistence](http://i.imgur.com/cS3XzoA.png)
+&nbsp;
+
+```cpp
+float signedOctave  ( float xPos, float yPos );
+```
+Function returns cumulative noise value from range -1 to 1. Total number of noise functions that are added together are described by ‘Octaves’ parameter.
+&nbsp;
+
+```cpp
+float unsignedOctave( float xPos, float yPos );
+```
+Same as `signedOctave` with difference that it returns value from range 0 to 1.
+
 
 ## Output
-How does it looks in practice?. It’s being well illustrated by picture below (yes… it’s this library output):
-![Octaves](http://i.imgur.com/WyspYaV.png)
+How does it looks in practice?. It’s being well illustrated by sample pictures below (yes… it’s this library output):
 
-To put it simply, the higher octaves (more noise functions added together) than more sophisticated output. 
+**Greyscale**
+![GreyScale](http://i.imgur.com/PrclqgJ.png)
+
+**Terrain maps**
+![Terrain](http://i.imgur.com/8gqNnrQ.png)
 
 ## Usage
 Basic usage 
@@ -52,7 +76,7 @@ SimplexNoise noiseGenerator;
 
 float xValue = 100.0f;
 float yValue = 100.0f;
-float value = noiseGenerator.noise( xValue, yValue );
+float value = noiseGenerator.unsignedOctave( xValue, yValue );
 ```
 
 ..and that’s it.
