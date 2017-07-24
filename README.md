@@ -62,14 +62,15 @@ float unsignedOctave( float xPos, float yPos );
 ```
 Same as `signedOctave` with difference that it returns value from range 0 to 1.
 
-
 ## Output
 How does it looks in practice?. It’s being well illustrated by sample pictures below (yes… it’s this library output):
 
 **Greyscale**
+
 ![GreyScale](http://i.imgur.com/PrclqgJ.png)
 
 **Terrain maps**
+
 ![Terrain](http://i.imgur.com/8gqNnrQ.png)
 
 ## Usage
