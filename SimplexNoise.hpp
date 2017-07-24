@@ -1,9 +1,9 @@
 /**
- * Simple Noise
+ * Simple Noise Generator Library
  *
  * Algorithm taken from          : http://webstaff.itn.liu.se/~stegu/simplexnoise/SimplexNoise.java
  * PDF version (with description): http://staffwww.itn.liu.se/~stegu/simplexnoise/simplexnoise.pdf
- * Octaves algorithm             : http://flafla2.github.io/2014/08/09/perlinnoise.html
+ * Octaves (Fractal) algorithm   : http://flafla2.github.io/2014/08/09/perlinnoise.html
  */
 
 #ifndef SIMPLEXNOISE_H
@@ -15,34 +15,29 @@
 
 class SimplexNoise {
     public:
-        SimplexNoise();
+        explicit SimplexNoise();
         virtual ~SimplexNoise();
 
-        float noise ( float xPos, float yPos );
-        float octave( int octaves, float xPos, float yPos );
         void  randomizeSeed ( void );
-        float unsignedNoise ( float xPos, float yPos );
-        float unsignedOctave( int octaves, float xPos, float yPos );
+        void  setFrequency  ( float frequency ) { this->frequency = frequency; };
+        void  setOctaves    ( int octaves ) { this->octaves = octaves; };
+        void  setPersistence( float persistence ) { this->persistence = persistence; };
+        float signedOctave  ( float xPos, float yPos );
+        float unsignedOctave( float xPos, float yPos );
 
     private:
-        class Gradient {
-            public:
-                float x, y;
+        float frequency;
+        static const std::pair<float, float> gradient[12];
+        unsigned int                         octaves;
+        static const unsigned short          originalPermTab[256];
+        unsigned short                       permTab[256];
+        float                                persistence;
+        static const float                   skewingFactor;
+        static const float                   unskewingFactor;
 
-                Gradient( float x, float y ) {
-                    this->x = x;
-                    this->y = y;
-                }
-        }; /* for sake of one class purpose only */
-
-        static const Gradient       gradient[];
-        static const unsigned short originalPermTab[256];
-        static const float          skewingFactor;
-        unsigned short              permTab[256];
-        static const float          unskewingFactor;
-
+        float          noise ( float xPos, float yPos );
         float          calculateCornerValue( float x, float y, int gradientIndex );
-        float          dot( Gradient gradient, float xPos, float yPos );
+        float          dot( std::pair<float, float> gradient, float xPos, float yPos );
         int            fastfloor( float x );
         unsigned short hash ( int i );
 };

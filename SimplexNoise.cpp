@@ -1,6 +1,10 @@
 #include "SimplexNoise.hpp"
 
 SimplexNoise::SimplexNoise() {
+    octaves = 1;
+    frequency = 1.0f;
+    persistence = 0.5f;
+
     std::copy( std::begin(originalPermTab), std::end(originalPermTab), std::begin(permTab) );
 }
 
@@ -18,7 +22,7 @@ const float SimplexNoise::unskewingFactor = ( 3.0f - sqrt(3.0f) ) / 6.0f;
  Hash lookup table as defined by Ken Perlin.
  This is a randomly arranged array of all numbers from 0-255 inclusive.
 */
-const unsigned short SimplexNoise::originalPermTab[] = {
+const unsigned short SimplexNoise::originalPermTab[256] = {
     151, 160, 137, 91,  90,  15,  131, 13,  201, 95,  96,  53,  194, 233, 7,
     225, 140, 36,  103, 30,  69,  142, 8,   99,  37,  240, 21,  10,  23,  190,
     6,   148, 247, 120, 234, 75,  0,   26,  197, 62,  94,  252, 219, 203, 117,
@@ -38,27 +42,27 @@ const unsigned short SimplexNoise::originalPermTab[] = {
     222, 114, 67,  29,  24,  72,  243, 141, 128, 195, 78,  66,  215, 61, 156,
     180
 };
-
 /* Pseudo random Gradients for 2D space */
-const SimplexNoise::Gradient SimplexNoise::gradient[] = {
-    SimplexNoise::Gradient( 1.0f , 1.0f ),  SimplexNoise::Gradient( -1.0f, 1.0f ),
-    SimplexNoise::Gradient( 1.0f , -1.0f ), SimplexNoise::Gradient( -1.0f, -1.0f ),
-    SimplexNoise::Gradient( 1.0f , 0.0f ),  SimplexNoise::Gradient( -1.0f, 0.0f ),
-    SimplexNoise::Gradient( 1.0f , 0.0f ),  SimplexNoise::Gradient( 0.0f , 1.0f ),
-    SimplexNoise::Gradient( 0.0f , -1.0f )
+const std::pair<float, float> SimplexNoise::gradient[12] = {
+    std::make_pair( -1.0f, -1.0f ), std::make_pair( -1.0f, 0.0f ), std::make_pair( -1.0f, 0.0f ),
+    std::make_pair( -1.0f, 1.0f ),  std::make_pair( 0.0f, -1.0f ), std::make_pair( 0.0f, -1.0f ),
+    std::make_pair( 0.0f, 1.0f ),   std::make_pair( 0.0f, 1.0f ),  std::make_pair( 1.0f, -1.0f ),
+    std::make_pair( 1.0f, 0.0f ),   std::make_pair( 1.0f, 0.0f ),  std::make_pair( 1.0f , 1.0f )
 };
 
 int SimplexNoise::fastfloor( float x ) {
     return ( x>0 ) ? (int)x : (int)x - 1;
 }
 
-float SimplexNoise::dot( Gradient gradient, float x, float y ) {
-    return gradient.x * x + gradient.y * y;
+float SimplexNoise::dot( std::pair<float, float> gradient, float x, float y ) {
+    float gradX = gradient.first;
+    float gradY = gradient.second;
+    return gradX * x + gradY * y;
 }
 
 /*
-Direct cpp port from java algorithm mentioned earlier
-Returns values from range: -1 to 1
+ Direct cpp port from java algorithm mentioned earlier (link to source inside  hpp file)
+ Returns values from range: -1 to 1
 */
 float SimplexNoise::noise( float xPos, float yPos ) {
     float nCorner0, nCorner1, nCorner2;
@@ -115,18 +119,17 @@ float SimplexNoise::noise( float xPos, float yPos ) {
     return 70.0f * ( nCorner0 + nCorner1 + nCorner2 );
 }
 
-float SimplexNoise::octave( int octaves, float xPos, float yPos ) {
-    float total = 0.0f;
-    float frequency = 1.0f;
+float SimplexNoise::signedOctave( float xPos, float yPos ) {
     float amplitude = 1.0f;
     float maxValue  = 0.0f;
-    float persistence = 0.5f;
+    float tmpFrequency = frequency;
+    float total = 0.0f;
 
-    for( int i=0; i<octaves; ++i ) {
-        total += noise( xPos * frequency, yPos * frequency ) * amplitude;
+    for( std::size_t i=0; i<octaves; ++i ) {
+        total += noise( xPos * tmpFrequency, yPos * tmpFrequency ) * amplitude;
         maxValue += amplitude;
         amplitude *= persistence;
-        frequency *= 2;
+        tmpFrequency *= 2;
     }
 
     return total/maxValue;
@@ -143,13 +146,8 @@ float SimplexNoise::calculateCornerValue( float x, float y, int gradientIndex ) 
     return corner;
 }
 
-// Returns values from range: 0 to 1
-float SimplexNoise::unsignedNoise( float xPos, float yPos ) {
-    return noise( xPos, yPos ) / 2 + 0.5f;
-}
-
-float SimplexNoise::unsignedOctave( int octaves, float xPos, float yPos ) {
-    return octave( octaves, xPos, yPos ) / 2 + 0.5f;
+float SimplexNoise::unsignedOctave( float xPos, float yPos ) {
+    return signedOctave( xPos, yPos ) / 2 + 0.5f;
 }
 
 void SimplexNoise::randomizeSeed( void ) {
