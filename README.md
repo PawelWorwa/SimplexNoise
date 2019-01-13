@@ -1,89 +1,115 @@
-# Simplex Noise for 2D space
+# Simplex Noise implementation for 2D space
 ## Introduction
 >“Simplex noise is a method for constructing an n-dimensional noise function comparable to Perlin noise ("classic" noise) but with fewer directional artefacts and, in higher dimensions, a lower computational overhead. Ken Perlin designed the algorithm in 2001 to address the limitations of his classic noise function, especially in higher dimensions.“ Description taken from [Wikipedia](https://en.wikipedia.org/wiki/Simplex_noise).
 
 ## About this library
-Aside from couple of changes and modifications (or to be more precisely, extensions), this library is direct port of Java algorithm presented by Stefan Gustavson and optimised by Peter Eastman.
+Aside from couple of changes and modifications (or to be more precisely, extensions), this library is direct port of Java algorithm presented by **Stefan Gustavson** and optimised by **Peter Eastman**.
 
 Original algorithm site:
 - Code:	 http://webstaff.itn.liu.se/~stegu/simplexnoise/SimplexNoise.java
 - Description:	http://staffwww.itn.liu.se/~stegu/simplexnoise/simplexnoise.pdf
 
-For octaves (Fractures) used algorithm from [this site](http://flafla2.github.io/2014/08/09/perlinnoise.html).
-
-For the sake of simplicity (personally, I like to include just one pair of header and class file), cpp class include two embedded classes. I know they could (and should) be optimised and keep as separate beings but like I said, it’s all for the sake of usage simplicity.
-
 ## Visualisation
-For testing and visualisation purposes , [SFML](https://www.sfml-dev.org/) (Simple and Fast Multimedia Library) was used. 
+For testing and visualisation purposes [SFML](https://www.sfml-dev.org/) (Simple and Fast Multimedia Library) was used. 
 
-## Function description
+## Functions description
 ```cpp
-void  randomizeSeed ( void );
+void randomizeSeed ();
 ```
-Generate random seed (by shuffling perutation table) to prevent same output each time.
-
-
-```cpp
-void  setFrequency  ( float frequency ) { this->frequency = frequency; };
-```
-Frequency determines "zoom" level for generated pattern. Best results are achieved, when parameter is within range **1.0f – 16.0f** If omitted, default value will be used (**1.0f**). Differences between various frequency values (1, 2 and 4) are presented below:
-
-![Frequency](http://i.imgur.com/4PWOJUx.png)
-
+Generate random seed (by shuffling permutation table) to prevent same output each time.
 
 ```cpp
-void  setOctaves    ( int octaves ) { this->octaves = octaves; };
+void setSeed( unsigned int seedNumber );
 ```
-Octaves are sum of noises generated on different frequencies. Best results are achieved, when parameter is within range **1 – 6**. If omitted, default value will be used (**1**). Differences between various octaves (1, 2 and 3) are presented below:
+Set custom seed to produce the same, expected output each time.
+
+```cpp
+double signedRawNoise( double xPos, double yPos );
+```
+Get raw signed noise value.
+
+```cpp
+double unsignedRawNoise( double xPos, double yPos );
+```
+Get raw unsigned noise value.
+
+```cpp
+double signedFBM( double xPos, double yPos, unsigned int octaves, double lacunarity, double gain );
+```
+FBM stands for Fractal Brownian Motion - get signed fractal value.
+More about fractals [here](https://www.scratchapixel.com/lessons/procedural-generation-virtual-worlds/procedural-patterns-noise-part-1/simple-pattern-examples).
+
+```cpp
+double unsignedFBM( double xPos, double yPos, unsigned int octaves, double lacunarity, double gain );
+```
+The same as above but returns unsgined fractal value.
+
+## Raw noise and Fractal Brownian Motion
+Fractional Brownian Motion is the summation of successive octaves of noise, each with higher frequency and lower amplitude.
+Saying it simply, its an output of couple of different noises combined.
+
+Results can be seen below (with raw noise output visualisation to the left). As one can see, FBM result in more sophisticated output:
+
+![Imgur](https://i.imgur.com/G2Y1qdv.png)
+
+Fractal Brownian Motion is determined by: 
+* **xPos**       - x value for noise
+* **yPos**       - y value for noise
+* **octaves**    - how many noise layers are used (number of octaves determines how detailed the output will be).
+Differences between various octaves (1, 2 and 3) are presented below:
 
 ![Octaves](http://i.imgur.com/LVkToA0.png)
 
+* **lacunarity** - is what makes the frequency grow as each octave the frequency is multiplied by the lacunarity
+Differences between various lacunarity values (1.0, 1.5 and 2.1042) are presented below:
 
-```cpp
-void  setPersistence( float persistence ) { this->persistence = persistence; };
-```
-I admit that it's ‘hard’ for me to explain in short word’s what exactly is persistence. Making use of explanation I’ve found [here](http://libnoise.sourceforge.net/glossary/#persistence).
->“**Persistence**
-A multiplier that determines how quickly the amplitudes diminish for each successive octave in a Perlin-noise function.“
+![Lacunarity](https://i.imgur.com/Cw9P75z.png)
 
-Best results are achieved, when parameter is within range **0.0f – 1.0f**. If omitted, default value will be used (**0.5f**).  Differences between various persistence values (0.4f, 0.5f and 0.6f) are presented below:
+* **gain**       - also called persistence, is what makes the amplitude shrink (or not shrink). Each octave the amplitude is multiplied by the gain
+Differences between various persistence values (0.4, 0.5 and 0.6) are presented below:
 
 ![Persistence](http://i.imgur.com/cS3XzoA.png)
 
+* **frequency**  - additional parameter applied directly to xPos and yPos. It determines "zoom" level for generated pattern. 
+Differences between various frequency values (1, 2 and 4) are presented below:
 
-```cpp
-float signedOctave  ( float xPos, float yPos );
-```
-Function returns cumulative noise value from range -1 to 1. Total number of noise functions that are added together are described by ‘Octaves’ parameter.
-
-
-```cpp
-float unsignedOctave( float xPos, float yPos );
-```
-Same as `signedOctave` with difference that it returns value from range 0 to 1.
+![Frequency](http://i.imgur.com/4PWOJUx.png)
 
 ## Output
-How does it looks in practice?. It’s being well illustrated by sample pictures below (yes… it’s this library output):
-
-**Greyscale**
+How does it looks in practice?. It’s being well illustrated by below example (yes… it’s this library output :-):
 
 ![GreyScale](http://i.imgur.com/PrclqgJ.png)
 
-**Terrain maps**
+(for the sake of simplicity, result is in greyscale)
 
-![Terrain](http://i.imgur.com/8gqNnrQ.png)
-
-## Usage
-Basic usage 
+## Usage 
+Example usage
 ```cpp
-SimplexNoise noiseGenerator;
+    const unsigned int width = 800;
+    const unsigned int height = 600;
+    
+    SimplexNoise noise;
+    
+    for ( std::size_t y = 0; y < height; ++y ) {
+        for ( std::size_t x = 0; x < width; ++x ) {
+            double xPos = double( x ) / double( width ) - 0.5;
+            double yPos = double( y ) / double( height ) - 0.5;
+    
+            double noiseValue = noise.signedRawNoise( xPos, yPos );
+            // do whatever you want with noiseValue here :-)
+        }
+    }
 
-float xValue = 100.0f;
-float yValue = 100.0f;
-float value = noiseGenerator.unsignedOctave( xValue, yValue );
 ```
 
-..and that’s it.
+another example that shows how to visualise output using [SFML](https://www.sfml-dev.org/) library can be seen in `main.cpp`.
+
+...and that’s it :-).
+
+## Additional articles 
+* Octaves (Fractal) algorithm   : http://flafla2.github.io/2014/08/09/perlinnoise.html
+* Fractional Brownian Motion    : https://www.scratchapixel.com/lessons/procedural-generation-virtual-worlds/procedural-patterns-noise-part-1/simple-pattern-examples
+* Good tutorial how to generate terrain from noise (at least in my opinion): https://www.redblobgames.com/maps/terrain-from-noise/
 
 ## License
 This project is licensed under the [MIT License](https://opensource.org/licenses/MIT) - see the **LICENSE** file for details
