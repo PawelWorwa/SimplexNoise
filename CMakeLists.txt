@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.13)
+cmake_minimum_required(VERSION 3.9)
 project(SimplexNoise)
 
 set(CMAKE_CXX_STANDARD 11)
@@ -6,9 +6,9 @@ set(CMAKE_CXX_STANDARD 11)
 include_directories(.)
 
 add_executable(SimplexNoise
-        LICENSE
-        main.cpp
         README.md
+        LICENSE
+        examples/RandomWorld.cpp
         SimplexNoise.cpp
         SimplexNoise.hpp)
 

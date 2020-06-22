@@ -23,22 +23,22 @@ class SimplexNoise {
         explicit SimplexNoise();
 
         void randomizeSeed();
-        void setSeed( unsigned int seedNumber );
-
-        double signedRawNoise( double xPos, double yPos );
-        double unsignedRawNoise( double xPos, double yPos );
-        double signedFBM( double xPos, double yPos, unsigned int octaves, double lacunarity, double gain );
-        double unsignedFBM( double xPos, double yPos, unsigned int octaves, double lacunarity, double gain );
+        void setSeed(const unsigned int &seedNumber);
+        double signedFBM(const double &xPos, const double &yPos, const unsigned int &octaves, const double &lacunarity, const double &gain);
+        double signedRawNoise(const double &xPos, const double &yPos);
+        double unsignedFBM(const double &xPos, const double &yPos, const unsigned int &octaves, const double &lacunarity, const double &gain);
+        double unsignedRawNoise(const double &xPos, const double &yPos);
 
     private:
-        const double skewingFactor = 0.366025;   // 0.5 * ( std::sqrt( 3.0 ) - 1.0 )
-        const double unskewingFactor = 0.211325; // ( 3.0 - std::sqrt( 3.0 )) / 6.0
+        static constexpr double SKEWING_FACTOR = 0.366025; // 0.5 * ( std::sqrt( 3.0 ) - 1.0 )
+        static constexpr double UNSKEWING_FACTOR = 0.211325; // ( 3.0 - std::sqrt( 3.0 )) / 6.0
+
         std::uint8_t permutation[256];
 
-        double calculateCornerValue( double x, double y, int gradientIndex );
-        double dot( std::pair< double, double > gradient2D, double x, double y );
-        int fastFloor( double x );
-        unsigned short hash( int i );
+        double calculateCornerValue(const double &x, const double &y, const int &gradientIndex);
+        double dot(std::pair< double, double > gradient2D, const double &x, const double &y);
+        int fastFloor(const double &x);
+        unsigned short hash(const int &i);
 };
 
 #endif // SIMPLEXNOISE_H

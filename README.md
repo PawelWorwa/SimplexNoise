@@ -9,38 +9,35 @@ Original algorithm site:
 - Code:	 http://webstaff.itn.liu.se/~stegu/simplexnoise/SimplexNoise.java
 - Description:	http://staffwww.itn.liu.se/~stegu/simplexnoise/simplexnoise.pdf
 
-## Visualisation
-For testing and visualisation purposes [SFML](https://www.sfml-dev.org/) (Simple and Fast Multimedia Library) was used. 
-
 ## Functions description
 ```cpp
-void randomizeSeed ();
+void randomizeSeed();
 ```
 Generate random seed (by shuffling permutation table) to prevent same output each time.
 
 ```cpp
-void setSeed( unsigned int seedNumber );
+void setSeed(const unsigned int &seedNumber);
 ```
 Set custom seed to produce the same, expected output each time.
 
 ```cpp
-double signedRawNoise( double xPos, double yPos );
+double signedRawNoise(const double &xPos, const double &yPos);
 ```
 Get raw signed noise value.
 
 ```cpp
-double unsignedRawNoise( double xPos, double yPos );
+double unsignedRawNoise(const double &xPos, const double &yPos);
 ```
 Get raw unsigned noise value.
 
 ```cpp
-double signedFBM( double xPos, double yPos, unsigned int octaves, double lacunarity, double gain );
+double signedFBM(const double &xPos, const double &yPos, const unsigned int &octaves, const double &lacunarity, const double &gain);
 ```
 FBM stands for Fractal Brownian Motion - get signed fractal value.
-More about fractals [here](https://www.scratchapixel.com/lessons/procedural-generation-virtual-worlds/procedural-patterns-noise-part-1/simple-pattern-examples).
+More about fractals can be seen [here](https://www.scratchapixel.com/lessons/procedural-generation-virtual-worlds/procedural-patterns-noise-part-1/simple-pattern-examples).
 
 ```cpp
-double unsignedFBM( double xPos, double yPos, unsigned int octaves, double lacunarity, double gain );
+double unsignedFBM(const double &xPos, const double &yPos, const unsigned int &octaves, const double &lacunarity, const double &gain);
 ```
 The same as above but returns unsgined fractal value.
 
@@ -76,35 +73,31 @@ Differences between various frequency values (1, 2 and 4) are presented below:
 ![Frequency](http://i.imgur.com/4PWOJUx.png)
 
 ## Output
-How does it looks in practice?. It’s being well illustrated by below example (yes… it’s this library output :-):
+How does it looks in practice?. It’s being well illustrated by below example (for the sake of simplicity, result is in greyscale):
 
 ![GreyScale](http://i.imgur.com/PrclqgJ.png)
-
-(for the sake of simplicity, result is in greyscale)
 
 ## Usage 
 Example usage
 ```cpp
-    const unsigned int width = 800;
-    const unsigned int height = 600;
+    const unsigned int WIDTH = 800;
+    const unsigned int HEIGHT = 600;
     
     SimplexNoise noise;
     
-    for ( std::size_t y = 0; y < height; ++y ) {
-        for ( std::size_t x = 0; x < width; ++x ) {
-            double xPos = double( x ) / double( width ) - 0.5;
-            double yPos = double( y ) / double( height ) - 0.5;
+    for ( std::size_t y = 0; y < HEIGHT; ++y ) {
+        for ( std::size_t x = 0; x < WIDTH; ++x ) {
+            double xPos = double( x ) / double( WIDTH ) - 0.5;
+            double yPos = double( y ) / double( HEIGHT ) - 0.5;
     
             double noiseValue = noise.signedRawNoise( xPos, yPos );
-            // do whatever you want with noiseValue here :-)
+            // do whatever you want with noiseValue here
         }
     }
-
 ```
 
-another example that shows how to visualise output using [SFML](https://www.sfml-dev.org/) library can be seen in `main.cpp`.
-
-...and that’s it :-).
+## Examples
+[Random world](./examples/README.md) playground visualised using [SFML](https://www.sfml-dev.org/) library.
 
 ## Additional articles 
 * Octaves (Fractal) algorithm   : http://flafla2.github.io/2014/08/09/perlinnoise.html
@@ -112,4 +105,4 @@ another example that shows how to visualise output using [SFML](https://www.sfml
 * Good tutorial how to generate terrain from noise (at least in my opinion): https://www.redblobgames.com/maps/terrain-from-noise/
 
 ## License
-This project is licensed under the [MIT License](https://opensource.org/licenses/MIT) - see the **LICENSE** file for details
+This project is licensed under the [MIT License](https://opensource.org/licenses/MIT) - see the **LICENSE** file for more details
