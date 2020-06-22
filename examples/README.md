@@ -19,4 +19,5 @@ Simplex noise used for generating random terrain (wasteland in this particular c
 For visualisation purposes [SFML](https://www.sfml-dev.org/) (Simple and Fast Multimedia Library) library was used.
 
 ![Wasteland](https://i.imgur.com/MnkwNz0.gif)
+
 Example terrain while playing with redistribution
